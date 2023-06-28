@@ -7,7 +7,7 @@ import {
   } from 'typeorm';
   
   @Entity({ name: 'Contact' })
-  export class PipelineTask {
+  export class Identity{
     @PrimaryGeneratedColumn()
     id: number;
   
