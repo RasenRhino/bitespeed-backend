@@ -15,4 +15,37 @@ constructor(
             ...identity
         });
     }
+    //a service to find all identities  by email 
+    async findIdentityByEmail(email:string):Promise<Identity[]>{
+        return this.idrepo.find({
+            where:{
+                email:email
+            }
+        });
+    }
+
+    //a service to find all identities  by phoneNumber
+    async findIdentityByPhoneNumber(phoneNumber:string):Promise<Identity[]>{
+        return this.idrepo.find({
+            where:{
+                phoneNumber:phoneNumber
+            }
+        });
+    }
+
+    //a service to find all identities by linkedId
+    async findIdentityByLinkedId(linkedId:number):Promise<Identity[]>{
+        return this.idrepo.find({
+            where:{
+                linkedId:linkedId
+            }
+        });
+    }
+
+    //a service to update the identity
+    async updateIdentity(identity:IdentityDto):Promise<Identity>{
+        return this.idrepo.save({
+            ...identity
+        });
+    }
 }

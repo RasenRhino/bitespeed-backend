@@ -16,8 +16,13 @@ export class IdentityController {
     async identity(
         @Body() body: IdentityUploadDto,
     ):Promise<any> {
-        console.log(body);
-        return body;
+        let identity:IdentityDto = {
+            email: body.email,
+            phoneNumber: body.phoneNumber,
+            linkPrecedence: "",
+        }
+        
+
     }
 
     //create a /identitydb endpoint which will populate the table of the database with the identity.upload.dto.ts body
@@ -33,4 +38,5 @@ export class IdentityController {
             throw new InternalServerErrorException('failed to add new feild to the database');  
         }
     }
+
 }
