@@ -48,4 +48,18 @@ constructor(
             ...identity
         });
     }
+
+    //update the identity link
+    async updateIdentityLink(id:number,linkedId:number):Promise<Identity>{
+        return this.idrepo.save({
+            id:id,
+            linkedId:linkedId,
+            linkPrecedence:"secondary"
+        });
+    }
+
+    //get all identities
+    async getAllIdentities():Promise<Identity[]>{
+        return this.idrepo.find();
+    }
 }
