@@ -18,7 +18,7 @@ For running in docker , the file can be found in `test` branch. Run the command 
 the application can then be accessed from `localhost`.
 
 
-all the sample data is preloaded in the database 
+all the sample data is preloaded in the database (on the deployed version, this won't be there if you run it in docker)
 
 the sample data looks like 
 
