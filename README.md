@@ -1,10 +1,36 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Contact identity app 
 
-# NestJSApiBoilerplateJWT
+### the app is hosted at https://api.rasenrhino.me/api.
 
-An API Boilerplate to create a ready-to-use REST API in seconds with NestJS 10.x and JWT Auth System :heart_eyes_cat:
+### the required identity endpoint can be access by doing a POST request to https://api.rasenrhino.me/api/identity
+
+
+all the sample data is preloaded in the database 
+
+the sample data looks like 
+
+```jsx
+{
+	id                   1                   
+  phoneNumber          "123456"
+  email                "lorraine@hillvalley.edu"
+  linkedId             null
+  linkPrecedence       "primary"
+  createdAt            2023-04-01 00:00:00.374+00              
+  updatedAt            2023-04-01 00:00:00.374+00              
+  deletedAt            null
+},
+{
+	id                   23                   
+  phoneNumber          "123456"
+  email                "mcfly@hillvalley.edu"
+  linkedId             1
+  linkPrecedence       "secondary"
+  createdAt            2023-04-20 05:30:00.11+00              
+  updatedAt            2023-04-20 05:30:00.11+00              
+  deletedAt            null
+}
+```
 
 ## Installation
 
@@ -12,32 +38,12 @@ An API Boilerplate to create a ready-to-use REST API in seconds with NestJS 10.x
    $ npm install
 ```
 
-## Set Enviroment for secret key JWT and other configurations
+## Set Enviroment for  configurations
 
 ```bash
    $ cp .env.example .env
 ```
 
-To set up on multiple environments, such as dev, stage or prod, we do as follows:
-
-```bash
-   $ cp .env.example .env.dev # or .env.stage, etc
-```
-
-## Config settings .env for send notification when a user registers, forgot password or change password
-
-```
-   EMAIL_HOST=smtp.mailtrap.io
-   EMAIL_PORT=2525
-   EMAIL_AUTH_USER=[:user]
-   EMAIL_AUTH_PASSWORD=[:password]
-   EMAIL_DEBUG=true
-   EMAIL_LOGGER=true
-   EMAIL_LAYOUT_DIR='templates/emails/'
-   EMAIL_PARTIAL_DIR='templates/emails/'
-   EMAIL_VIEW_PATH='/templates/emails/'
-   EMAIL_DEFAULT_LAYOUT='index'
-```
 
 ## Config settings .env for connect MySQL
 
@@ -86,31 +92,9 @@ or
     # watch mode
     $ npm run start:dev
 
-    # production mode
-    $ npm run start:prod
 ```
 
-## Runnig the app in REPL mode
 
-```bash
-   $ npm run start -- --entryFile repl
-```
-
-or
-
-```bash
-   $ npm run start:repl
-```
-
-## Docker
-
-There is a `docker-compose.yml` file for starting MySQL with Docker.
-
-`$ docker-compose up db`
-
-After running, you can stop the Docker container with
-
-`$ docker-compose down`
 
 
 ## Url Swagger for Api Documentation
@@ -124,14 +108,22 @@ or
 
 ```
 
-http://127.0.0.1:3000/docs-json
+https://api.rasenrhino.me/docs
 
 ```
 or
 
 ```
 
-http://127.0.0.1:3000/docs-yaml
+/docs-json 
+
+```
+
+or
+
+```
+
+/docs-yaml 
 
 ```
 
@@ -145,17 +137,6 @@ SWAGGER_PASSWORD=[:password]
 
 ````
 
-If you want to add more environments, include them in the `SWAGGER_ENVS` array in `main.ts`, see the following:
-
-```typescript
-const SWAGGER_ENVS = ['local', 'dev', 'staging'];
-````
-
-## Configuring the NODE_API_PORT environment variable as the default port if you don't want to use the default
-
-```
-   NODE_API_PORT=3333
-```
 
 ## Configuring the ENDPOINT_CORS environment variable for app frontend
 
@@ -169,62 +150,3 @@ const SWAGGER_ENVS = ['local', 'dev', 'staging'];
     $ curl -H 'content-type: application/json' -v -X GET http://127.0.0.1:3000/api/secure  -H 'Authorization: Bearer [:token]'
 ```
 
-## Generate Token JWT Authentication with Curl
-
-```bash
-   $ curl -H 'content-type: application/json' -v -X POST -d '{"email": "tony_admin@nest.it", "password": "secret"}' http://127.0.0.1:3000/api/auth/login
-```
-
-## Registration user with Curl
-
-```bash
-   $ curl -H 'content-type: application/json' -v -X POST -d '{"name": "tony", "email": "tony_admin@nest.it", "username":"tony_admin", "password": "secret"}' http://127.0.0.1:3000/api/auth/register
-```
-
-## Refresh token with curl
-
-```bash
-   $ curl -H 'content-type: application/json' -v -X POST -d '{"refreshToken": "[:token]"}' http://127.0.0.1:3000/api/auth/refresh-tokens
-```
-
-## Forgot password with curl
-
-```bash
-   $ curl -H 'content-type: application/json' -v -X POST -d '{"email": "tony_admin@nest.it"}' http://127.0.0.1:3000/api/auth/forgot-password
-```
-
-## Change password User with curl
-
-```bash
-   $ curl -H 'content-type: application/json' -v -X POST -d '{"email": "tony_admin@nest.it", "password": "secret123"}' http://127.0.0.1:3000/api/auth/change-password  -H 'Authorization: Bearer [:token]'
-```
-
-## Update profile User with curl
-
-```bash
-   $ curl -H 'content-type: application/json' -v -X PUT -d '{"name": "tony", "email": "tony_admin@nest.it", "username": "tony_admin"}' http://127.0.0.1:3000/api/users/:id/profile  -H 'Authorization: Bearer [:token]'
-```
-
-## Users list with Curl
-
-```bash
-   $ curl -H 'content-type: application/json' -H 'Accept: application/json' -v -X GET http://127.0.0.1:3000/api/users  -H 'Authorization: Bearer [:token]'
-```
-
-## User by Id with Curl
-
-```bash
-   $ curl -H 'content-type: application/json' -H 'Accept: application/json' -v -X GET http://127.0.0.1:3000/api/users/:id  -H 'Authorization: Bearer [:token]'
-```
-
-## Update User with Curl
-
-```bash
-   $ curl -H 'content-type: application/json' -v -X PUT -d '{"name": "tony", "email": "tony_admin@nest.it", "username": "tony_admin", "password":"secret"}' http://127.0.0.1:3000/api/users/:id  -H 'Authorization: Bearer [:token]'
-```
-
-## Delete User by Id with Curl
-
-```bash
-   $ curl -H 'content-type: application/json' -H 'Accept: application/json' -v -X DELETE http://127.0.0.1:3000/api/users/:id  -H 'Authorization: Bearer [:token]'
-```
