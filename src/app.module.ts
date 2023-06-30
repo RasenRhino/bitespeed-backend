@@ -3,9 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { IamModule } from './iam/iam.module';
 import { IdentityModule } from './modules/identity/identity.module';
 
 @Module({
@@ -42,9 +40,7 @@ import { IdentityModule } from './modules/identity/identity.module';
         },
       }),
     }),
-    IamModule,
-    UsersModule,
-    IdentityModule,
+   IdentityModule,
   ],
   controllers: [AppController],
   providers: [AppService],
