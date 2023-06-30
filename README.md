@@ -4,10 +4,24 @@
 
 ### the required identity endpoint can be access by doing a POST request to https://api.rasenrhino.me/api/identity
 
+the application is deployed on digitalocean droplet. The CI is triggered when some changes are pushed to main branch .
 
-all the sample data is preloaded in the database 
+#### Note 
+For running in docker , the file can be found in `test` branch. Run the command in the following order (after checking out to test branch)
+
+```bash
+   $ cp .env.example .env
+```
+```bash
+   $ docker-compose up
+```
+the application can then be accessed from `localhost`.
+
+
+all the sample data is preloaded in the database (on the deployed version, this won't be there if you run it in docker)
 
 the sample data looks like 
+
 
 ```jsx
 {
