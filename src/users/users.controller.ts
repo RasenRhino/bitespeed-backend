@@ -17,7 +17,6 @@ import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../iam/login/decorators/auth-guard.decorator';
 import { AuthType } from '../iam/login/enums/auth-type.enum';
 
-@ApiTags('users')
 @AuthGuard(AuthType.Bearer)
 @Controller('users')
 export class UsersController {

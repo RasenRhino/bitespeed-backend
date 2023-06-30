@@ -11,7 +11,6 @@ import { ApiTags } from '@nestjs/swagger';
 import { AuthType } from '../login/enums/auth-type.enum';
 import { AuthGuard } from '../login/decorators/auth-guard.decorator';
 
-@ApiTags('auth')
 @AuthGuard(AuthType.None)
 @Controller('auth/register')
 export class RegisterController {

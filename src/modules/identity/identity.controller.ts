@@ -7,6 +7,7 @@ import { Response } from 'express';
 import { AuthGuard } from 'src/iam/login/decorators/auth-guard.decorator';
 import { AuthType } from 'src/iam/login/enums/auth-type.enum';
 import { Output, Contact } from './interface/output.interface'
+import { Identity } from './entities/identity.entity';
 
 @ApiTags('Contact')
 @AuthGuard(AuthType.None)
@@ -28,52 +29,74 @@ export class IdentityController {
             identitiesByPhoneNumber = await this.identityService.findIdentityByPhoneNumber(body.phoneNumber);
         }
 
-        const existingIdentities = [...identitiesByEmail, ...identitiesByPhoneNumber];
-
+        let existingIdentities = [...identitiesByEmail, ...identitiesByPhoneNumber];
+        let primaryIdentity = existingIdentities.sort((a, b) => a.createdAt - b.createdAt)[0];
         if (existingIdentities.length > 0) {
-            const primaryIdentity = existingIdentities.sort((a, b) => a.createdAt - b.createdAt)[0];
-            const identitiesToUpdate = existingIdentities.filter(identity => identity.linkedId !== primaryIdentity.id);
-            for (const identity of identitiesToUpdate) {
-                if(identity.id !== primaryIdentity.id)
-                await this.identityService.updateIdentityLink(identity.id, primaryIdentity.id);
-            }
-            const emailExists = existingIdentities.some(identity => identity.email === body.email);
-            const phoneNumberExists = existingIdentities.some(identity => identity.phoneNumber === body.phoneNumber);
+            if(primaryIdentity.linkPrecedence != "secondary"){
+                const identitiesToUpdate = existingIdentities.filter(identity => identity.linkedId !== primaryIdentity.id);
+                for (const identity of identitiesToUpdate) {
+                    if(identity.id !== primaryIdentity.id)
+                    await this.identityService.updateIdentityLink(identity.id, primaryIdentity.id);
+                }
+                const emailExists = existingIdentities.some(identity => identity.email === body.email);
+                const phoneNumberExists = existingIdentities.some(identity => identity.phoneNumber === body.phoneNumber);
 
-            if (body.email && !emailExists || body.phoneNumber && !phoneNumberExists) {
-                const newIdentity: IdentityDto = {
-                    email: body.email,
-                    phoneNumber: body.phoneNumber,
-                    linkPrecedence: "secondary",
-                    linkedId: primaryIdentity.id,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                    deletedAt: null
-                };
+                if (body.email && !emailExists || body.phoneNumber && !phoneNumberExists) {
+                    const newIdentity: IdentityDto = {
+                        email: body.email,
+                        phoneNumber: body.phoneNumber,
+                        linkPrecedence: "secondary",
+                        linkedId: primaryIdentity.id,
+                        createdAt: new Date(),
+                        updatedAt: new Date(),
+                        deletedAt: null
+                    };
 
-                await this.identityService.addIdentity(newIdentity);
+                    await this.identityService.addIdentity(newIdentity);
 
+                }
             }
             let allEmails = [];
+            let allPhoneNumbers = [];
+            let secondaryContactIds = [];
+            let length=existingIdentities.length;
+            let toadd=[];
+            for(let i=0;i<length;i++){
+                const email = existingIdentities[i].email;
+                const phoneNumber = existingIdentities[i].phoneNumber;
+                if(body.email && !body.phoneNumber){
+                    let temp=await this.identityService.findIdentityByPhoneNumber(phoneNumber);
+                    if(temp.length>0){
+                        toadd=[...toadd,...temp]
+                    }
+                }
+                if(body.phoneNumber && !body.email){
+                    let temp=await this.identityService.findIdentityByEmail(email);
+                    if(temp.length>0){
+                        toadd=[...toadd,...temp]
+                    }
+                }
+            }
+            existingIdentities=[...existingIdentities,...toadd];
             for (let i = 0; i < existingIdentities.length; i++) {
                 const email = existingIdentities[i].email;
-                if(email)
-                    allEmails.push(email);
-            }
-            let allPhoneNumbers = [];
-            for (let i = 0; i < existingIdentities.length; i++) {
                 const phoneNumber = existingIdentities[i].phoneNumber;
-                if(phoneNumber)
-                allPhoneNumbers.push(phoneNumber);
+                if(email && !allEmails.includes(email))
+                    allEmails.push(email);
+                if(phoneNumber && !allPhoneNumbers.includes(phoneNumber))
+                    allPhoneNumbers.push(phoneNumber);
             }
             let allContacts = await this.identityService.getAllIdentities();
-            let secondaryContactIds = [];
+            if(primaryIdentity.linkPrecedence == "secondary"){
+                primaryIdentity = existingIdentities.sort((a, b) => a.createdAt - b.createdAt)[0];
+                console.log({primaryIdentity})
+            }
             for (let i = 0; i < allContacts.length; i++) {
-                const secondaryContactId = allContacts[i].linkedId;
-                if(secondaryContactId && secondaryContactId === primaryIdentity.id)
+                const secondaryContactId = allContacts[i].id;
+                if(secondaryContactId && allContacts[i].linkedId == primaryIdentity.id)
                 secondaryContactIds.push(secondaryContactId);
             }
-            console.log({existingIdentities})
+            
             allEmails = [...new Set(allEmails)];
             allPhoneNumbers = [...new Set(allPhoneNumbers)];
             secondaryContactIds = [...new Set(secondaryContactIds)];
@@ -87,8 +110,6 @@ export class IdentityController {
                 contact: contact
             }
             res.status(HttpStatus.OK).json(output);
-
-            // res.status(HttpStatus.OK).json({ message: 'Updated existing identities and added new identity if needed' });
         } else {
             let identity: IdentityDto = {
                 email: body.email,
@@ -100,12 +121,23 @@ export class IdentityController {
                 deletedAt: null
             }
             try {
-                await this.identityService.addIdentity(identity);
-                res.status(HttpStatus.OK).json({ message: 'Added new identity' });
+                let newContact=await this.identityService.addIdentity(identity);
+                const contact : Contact = {
+                    primaryContactId: newContact.id,
+                    emails: [newContact.email],
+                    phoneNumbers: [newContact.phoneNumber],
+                    secondaryContactIds: []
+                }
+                const output: Output = {
+                    contact: contact
+                }
+                res.status(HttpStatus.OK).json(output);
+
+                // res.status(HttpStatus.OK).json({ message: 'Added new identity' });
+
             } catch(e) {
                 console.log({e});
                 throw new InternalServerErrorException('Failed to add new field');
-
             }
         }
     }

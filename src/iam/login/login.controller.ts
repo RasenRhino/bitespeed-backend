@@ -6,7 +6,6 @@ import { AuthType } from './enums/auth-type.enum';
 import { AuthGuard } from './decorators/auth-guard.decorator';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 
-@ApiTags('auth')
 @AuthGuard(AuthType.None)
 @Controller('auth')
 export class LoginController {

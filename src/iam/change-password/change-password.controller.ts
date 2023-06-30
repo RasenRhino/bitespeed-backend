@@ -11,7 +11,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../login/decorators/auth-guard.decorator';
 import { AuthType } from '../login/enums/auth-type.enum';
 
-@ApiTags('auth')
+
 @AuthGuard(AuthType.Bearer)
 @Controller('auth/change-password')
 export class ChangePasswordController {
