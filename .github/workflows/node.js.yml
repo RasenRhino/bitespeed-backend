@@ -1,0 +1,47 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Node.js CI
+
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x,20.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - run: npm install # installs your dependencies
+      - run: npm run build --if-present
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' # we tell Github to only execute this step if we're on our master branch (so we don't put unfinished branches in production)
+    steps:
+      - name: Deploying to personal digitalocean
+        uses: appleboy/ssh-action@master # An action made to control Linux servers
+        with: # We set all our secrets here for the action, these won't be shown in the action logs
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /var/www/api/bitespeed-backend # we move into our app's folder
+            export PATH=$PATH:/home/newkprod/.nvm/versions/node/v20.3.1/bin
+            pm2 stop main-app
+            git pull # we pull any changes from git
+            npm prune # we remove any unused dependencies
+            npm install # we install any missing dependencies
+            npm run build # we build our app
+            pm2 start main-app
