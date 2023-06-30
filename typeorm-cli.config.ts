@@ -15,7 +15,7 @@ export default new DataSource({
   password: configService.get<string>('TYPEORM_PASSWORD'),
   database: configService.get<string>('TYPEORM_DATABASE'),
   port: configService.get<number>('TYPEORM_PORT'),
-  synchronize: false,
+  synchronize: true,
   ssl: {
     rejectUnauthorized: false,
   },

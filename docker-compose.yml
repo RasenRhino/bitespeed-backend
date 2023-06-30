@@ -2,19 +2,20 @@ version: "3"
 
 services:
   db:
-    image: mysql:8.0
-    restart: always
+    container_name: nestmysql  
+    image: mysql:latest
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: nest
+      MYSQL_ROOT_PASSWORD: ridham 
+      MYSQL_DATABASE : bitespeed
     ports:
-      - "3306:3306"
-
-  db-test:
-    image: mysql:8.0
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: test
+      - "5501:3306"
+  app:
+    depends_on:
+      - db
+    container_name: nestapp
+    build: .
     ports:
-      - "3307:3306"
+      - "80:3000"
+    links:
+      - db
+  

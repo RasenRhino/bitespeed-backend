@@ -25,7 +25,6 @@ export class IdentityController {
         if (body.phoneNumber) {
             identitiesByPhoneNumber = await this.identityService.findIdentityByPhoneNumber(body.phoneNumber);
         }
-
         let existingIdentities = [...identitiesByEmail, ...identitiesByPhoneNumber];
         let primaryIdentity = existingIdentities.sort((a, b) => a.createdAt - b.createdAt)[0];
         if (existingIdentities.length > 0) {

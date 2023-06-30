@@ -30,7 +30,7 @@ import { IdentityModule } from './modules/identity/identity.module';
         username: config.get<string>('TYPEORM_USERNAME'),
         password: config.get<string>('TYPEORM_PASSWORD'),
         database: config.get<string>('TYPEORM_DATABASE'),
-        synchronize: false,
+        synchronize: true,
         entities: [__dirname + '/**/*.{model,entity}.{ts,js}'],
         migrations: ['dist/migrations/**/*.js'],
         subscribers: ['dist/subscriber/**/*.js'],
