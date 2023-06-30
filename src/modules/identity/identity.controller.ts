@@ -4,13 +4,10 @@ import { IdentityDto } from './dto/identity.dto';
 import { IdentityService } from './identity.service';
 import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { AuthGuard } from 'src/iam/login/decorators/auth-guard.decorator';
-import { AuthType } from 'src/iam/login/enums/auth-type.enum';
 import { Output, Contact } from './interface/output.interface'
 import { Identity } from './entities/identity.entity';
 
 @ApiTags('Contact')
-@AuthGuard(AuthType.None)
 @Controller()
 export class IdentityController {
     constructor(private identityService:IdentityService) {}
