@@ -108,14 +108,22 @@ or
 
 ```
 
-http://api.rasenrhino.me/docs-json
+https://api.rasenrhino.me/docs
 
 ```
 or
 
 ```
 
-http://127.0.0.1:3000/docs-yaml
+/docs-json 
+
+```
+
+or
+
+```
+
+/docs-yaml 
 
 ```
 
