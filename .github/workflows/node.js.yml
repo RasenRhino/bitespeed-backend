@@ -38,7 +38,7 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd /var/www/api/bitespeed-backend # we move into our app's folder
-            export PATH=$PATH:/home/newkprod/.nvm/versions/node/v20.3.1/bin
+            export PATH=$PATH:/home/rhino/.nvm/versions/node/v20.3.1/bin
             pm2 stop main-app
             git pull # we pull any changes from git
             npm prune # we remove any unused dependencies
