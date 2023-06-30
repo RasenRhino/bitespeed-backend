@@ -7,7 +7,8 @@
 the application is deployed on digitalocean droplet. The CI is triggered when some changes are pushed to main branch .
 
 #### Note 
-For running in docker , the file can be found in `test` branch. Run the command in the following order 
+For running in docker , the file can be found in `test` branch. Run the command in the following order For running in docker , the file can be found in `test` branch. Run the command in the following order (after checking out to test branch)
+
 
 ```bash
    $ cp .env.example .env
